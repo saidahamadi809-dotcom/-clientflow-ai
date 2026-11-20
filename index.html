@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClientFlow AI — CRM intelligent</title>
+<style>
+:root{--bg:#0b1220;--panel:#111c2e;--panel2:#17243a;--line:#263650;--text:#eef4ff;--muted:#9aabc4;--blue:#5b8cff;--green:#37c995;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;background:var(--blue);color:white;font-weight:650}
+button.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}button.danger{background:#572b38}
+header{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#0d1728;position:sticky;top:0;z-index:5}
+.brand{font-size:19px;font-weight:800;letter-spacing:.2px}.brand span{color:var(--blue)}.tag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:5px 9px;border-radius:20px}
+.layout{display:grid;grid-template-columns:225px 1fr;min-height:calc(100vh - 68px)}
+aside{padding:22px 14px;border-right:1px solid var(--line);background:#0d1728}
+.nav{display:flex;gap:11px;align-items:center;width:100%;text-align:left;background:transparent;color:var(--muted);margin:4px 0;padding:12px}
+.nav.active,.nav:hover{background:var(--panel2);color:white}
+main{padding:30px;max-width:1400px;width:100%;margin:auto}
+h1{font-size:28px;margin:0 0 5px}h2{font-size:18px;margin:0 0 16px}.sub{color:var(--muted);margin:0 0 24px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0}
+.card,.box{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:18px}
+.label{color:var(--muted);font-size:13px}.value{font-size:27px;font-weight:800;margin-top:5px}
+.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px 9px;border-bottom:1px solid var(--line);font-size:14px}th{color:var(--muted);font-weight:600}
+.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#20375a;color:#a9c5ff;font-size:12px}
+input,select,textarea{width:100%;background:#0c1626;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:10px;margin:5px 0 12px}
+textarea{min-height:120px;resize:vertical}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}
+.toolbar input{max-width:300px;margin:0}.hidden{display:none!important}.muted{color:var(--muted)}.empty{padding:24px;text-align:center;color:var(--muted)}
+.notice{background:#172d3a;border:1px solid #24556a;color:#bce8f5;border-radius:10px;padding:12px 14px;margin:16px 0;font-size:13px}
+.modal{position:fixed;inset:0;background:#0009;display:grid;place-items:center;padding:16px;z-index:10}.modal>div{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;width:min(560px,100%);max-height:90vh;overflow:auto}
+section.page{display:none}section.page.active{display:block}
+@media(max-width:850px){.layout{grid-template-columns:1fr}aside{display:flex;overflow:auto;padding:8px;border-right:0;border-bottom:1px solid var(--line)}.nav{white-space:nowrap;width:auto;margin:0;padding:9px}main{padding:20px 14px}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:480px){header{padding:0 14px}.cards{gap:9px}.card{padding:13px}.value{font-size:22px}.formgrid{grid-template-columns:1fr}h1{font-size:24px}th,td{padding:9px 5px;font-size:12px}}
+</style>
+</head>
+<body>
+<header><div class="brand">Client<span>Flow</span> AI</div><div class="tag">Prototype · Données enregistrées sur cet appareil</div></header>
+<div class="layout">
+<aside>
+<button class="nav active" data-page="dashboard">▦ Tableau de bord</button>
+<button class="nav" data-page="leads">♙ Prospects / CRM</button>
+<button class="nav" data-page="writer">✦ Assistant de messages</button>
+<button class="nav" data-page="followups">◷ Relances</button>
+</aside>
+<main>
+<section id="dashboard" class="page active">
+<h1>Bonjour 👋</h1><p class="sub">Voici le résumé de votre activité commerciale.</p>
+<div class="cards">
+<div class="card"><div class="label">Prospects</div><div class="value" id="kLeads">0</div></div>
+<div class="card"><div class="label">Clients gagnés</div><div class="value" id="kWon">0</div></div>
+<div class="card"><div class="label">Taux de conversion</div><div class="value" id="kRate">0 %</div></div>
+<div class="card"><div class="label">Valeur du pipeline</div><div class="value" id="kValue">0 €</div></div>
+</div>
+<div class="grid2">
+<div class="box"><h2>Derniers prospects</h2><div id="recent"></div></div>
+<div class="box"><h2>À retenir</h2><p class="muted">Ajoutez vos prospects, notez la prochaine action et utilisez l'assistant pour préparer vos messages commerciaux.</p><button onclick="showPage('leads')">Ajouter un prospect</button></div>
+</div>
+<div class="notice">Version de démarrage : les données restent dans le stockage local de ce navigateur. Ce prototype ne possède pas encore de comptes utilisateurs, de synchronisation cloud, d'envoi automatique ni de véritable IA connectée.</div>
+</section>
+
+<section id="leads" class="page">
+<div class="toolbar"><div><h1>Prospects & CRM</h1><p class="sub">Centralisez vos contacts et suivez vos opportunités.</p></div><button onclick="openLead()">+ Ajouter</button></div>
+<div class="toolbar"><input id="search" placeholder="Rechercher un prospect..." oninput="renderLeads()"><select id="filter" onchange="renderLeads()" style="max-width:190px"><option value="">Tous les statuts</option><option>Nouveau</option><option>Contacté</option><option>Qualifié</option><option>Gagné</option><option>Perdu</option></select></div>
+<div class="box" style="overflow:auto"><table><thead><tr><th>Entreprise / contact</th><th>Email</th><th>Statut</th><th>Valeur</th><th>Action</th></tr></thead><tbody id="leadRows"></tbody></table><div id="noLeads" class="empty">Aucun prospect. Ajoutez votre premier contact.</div></div>
+</section>
+
+<section id="writer" class="page">
+<h1>Assistant de messages</h1><p class="sub">Préparez un premier email commercial personnalisé.</p>
+<div class="box">
+<label>Nom du prospect</label><input id="wName" placeholder="Ex. Marie">
+<label>Entreprise</label><input id="wCompany" placeholder="Ex. Atelier Martin">
+<label>Votre offre / service</label><input id="wOffer" placeholder="Ex. automatisation du suivi client">
+<label>Ton</label><select id="wTone"><option>Professionnel et chaleureux</option><option>Direct et concis</option><option>Conseil et expertise</option></select>
+<button onclick="generateMessage()">Générer un brouillon</button>
+<label style="display:block;margin-top:16px">Brouillon modifiable</label><textarea id="wOutput" placeholder="Votre message apparaîtra ici..."></textarea>
+<button class="secondary" onclick="copyMessage()">Copier le message</button>
+<div class="notice">Ce générateur utilise actuellement un modèle local, sans appel à une API IA et sans frais. Relisez et personnalisez toujours le message avant de l'envoyer.</div>
+</div>
+</section>
+
+<section id="followups" class="page">
+<h1>Relances</h1><p class="sub">Retrouvez les prochaines actions à effectuer.</p>
+<div class="box"><div id="followRows" class="empty">Aucune relance prévue.</div></div>
+</section>
+</main>
+</div>
+
+<div id="leadModal" class="modal hidden"><div>
+<div class="toolbar"><h2 id="modalTitle">Ajouter un prospect</h2><button class="secondary" onclick="closeLead()">Fermer</button></div>
+<form id="leadForm">
+<input type="hidden" id="leadId">
+<div class="formgrid"><div><label>Entreprise *</label><input id="company" required></div><div><label>Contact</label><input id="person"></div></div>
+<div class="formgrid"><div><label>Email</label><input id="email" type="email"></div><div><label>Téléphone</label><input id="phone"></div></div>
+<div class="formgrid"><div><label>Statut</label><select id="status"><option>Nouveau</option><option>Contacté</option><option>Qualifié</option><option>Gagné</option><option>Perdu</option></select></div><div><label>Valeur estimée (€)</label><input id="amount" type="number" min="0" value="0"></div></div>
+<label>Prochaine relance</label><input id="due" type="date">
+<label>Notes</label><textarea id="notes" style="min-height:75px"></textarea>
+<div class="actions"><button type="submit">Enregistrer</button><button type="button" class="danger" id="deleteBtn" onclick="deleteLead()" style="display:none">Supprimer</button></div>
+</form></div></div>
+<script>
+const KEY='clientflow_leads_v1'; let leads=JSON.parse(localStorage.getItem(KEY)||'[]');
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem(KEY,JSON.stringify(leads));renderAll()}
+function showPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.page===id));}
+document.querySelectorAll('.nav').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderAll(){renderStats();renderLeads();renderRecent();renderFollowups()}
+function renderStats(){let won=leads.filter(x=>x.status==='Gagné').length;let active=leads.filter(x=>!['Gagné','Perdu'].includes(x.status));$('kLeads').textContent=leads.length;$('kWon').textContent=won;$('kRate').textContent=(leads.length?Math.round(won/leads.length*100):0)+' %';$('kValue').textContent=active.reduce((a,x)=>a+(+x.amount||0),0).toLocaleString('fr-FR')+' €'}
+function renderLeads(){let q=($('search')?.value||'').toLowerCase(),f=$('filter')?.value||'';let arr=leads.filter(x=>(!f||x.status===f)&&[x.company,x.person,x.email].join(' ').toLowerCase().includes(q));$('leadRows').innerHTML=arr.map(x=>`<tr><td><b>${esc(x.company)}</b><br><span class="muted">${esc(x.person)}</span></td><td>${esc(x.email)}</td><td><span class="pill">${esc(x.status)}</span></td><td>${(+x.amount||0).toLocaleString('fr-FR')} €</td><td><button class="secondary" onclick="editLead('${x.id}')">Modifier</button></td></tr>`).join('');$('noLeads').style.display=arr.length?'none':'block'}
+function renderRecent(){let arr=[...leads].slice(-5).reverse();$('recent').innerHTML=arr.length?arr.map(x=>`<p>${esc(x.company)} <span class="pill">${esc(x.status)}</span></p>`).join(''):'<p class="muted">Aucune activité pour le moment.</p>'}
+function renderFollowups(){let arr=leads.filter(x=>x.due).sort((a,b)=>a.due.localeCompare(b.due));$('followRows').innerHTML=arr.length?'<table><thead><tr><th>Date</th><th>Entreprise</th><th>Contact</th><th>Statut</th></tr></thead><tbody>'+arr.map(x=>`<tr><td>${esc(x.due)}</td><td>${esc(x.company)}</td><td>${esc(x.person)}</td><td>${esc(x.status)}</td></tr>`).join('')+'</tbody></table>':'Aucune relance prévue. Ajoutez une date de relance à un prospect.'}
+function openLead(){ $('leadForm').reset();$('leadId').value='';$('amount').value=0;$('modalTitle').textContent='Ajouter un prospect';$('deleteBtn').style.display='none';$('leadModal').classList.remove('hidden')}
+function closeLead(){$('leadModal').classList.add('hidden')}
+function editLead(id){let x=leads.find(a=>a.id===id);if(!x)return;for(let k of ['id','company','person','email','phone','status','amount','due','notes'])$(k==='id'?'leadId':k).value=x[k]??'';$('modalTitle').textContent='Modifier le prospect';$('deleteBtn').style.display='inline-block';$('leadModal').classList.remove('hidden')}
+$('leadForm').addEventListener('submit',e=>{e.preventDefault();let id=$('leadId').value;let x={id:id||crypto.randomUUID(),company:$('company').value.trim(),person:$('person').value.trim(),email:$('email').value.trim(),phone:$('phone').value.trim(),status:$('status').value,amount:+$('amount').value||0,due:$('due').value,notes:$('notes').value};if(id)leads=leads.map(a=>a.id===id?x:a);else leads.push(x);save();closeLead()});
+function deleteLead(){let id=$('leadId').value;if(confirm('Supprimer ce prospect ?')){leads=leads.filter(x=>x.id!==id);save();closeLead()}}
+function generateMessage(){let n=$('wName').value.trim()||'Bonjour',c=$('wCompany').value.trim()||'votre entreprise',o=$('wOffer').value.trim()||'l’amélioration de votre suivi commercial',t=$('wTone').value;let intro=t==='Direct et concis'?'Je vous contacte car ':'Je me permets de vous contacter car ';$('wOutput').value=`Objet : Une idée pour ${c}\n\nBonjour ${n},\n\n${intro}${o} pourrait peut-être vous être utile.\n\nJ’accompagne les entreprises qui souhaitent gagner du temps et mieux suivre leurs opportunités commerciales. Seriez-vous disponible pour un court échange afin de voir si cela pourrait répondre à vos besoins ?\n\nBien cordialement,\n[Votre nom]`}
+function copyMessage(){let t=$('wOutput').value;if(!t)return alert('Générez d’abord un brouillon.');navigator.clipboard?.writeText(t).then(()=>alert('Message copié.')).catch(()=>alert('Sélectionnez le texte pour le copier.'))}
+renderAll();
+</script>
+</body>
+</html>
